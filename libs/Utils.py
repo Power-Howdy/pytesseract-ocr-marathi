@@ -1,13 +1,13 @@
-import ConsoleColors
+from libs import ConsoleColors
 
 # Function to get colored input
 def colored_input(prompt, color):
     return input(color + prompt + ConsoleColors.TextColor.RESET)
 
-def essential_input(prompt, color):
+def essential_input(prompt):
     return input(ConsoleColors.TextColor.CYAN + prompt + ConsoleColors.TextColor.RESET)
 
-def optional_input(prompt, color):
+def optional_input(prompt):
     return input(ConsoleColors.TextColor.GREEN + prompt + ConsoleColors.TextColor.RESET)
 
 def msg_success(str):

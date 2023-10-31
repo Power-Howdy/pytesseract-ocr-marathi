@@ -21,7 +21,7 @@ end_page = "0"
 # Start work from here
 inputStr = Utils.essential_input("Enter pdf file name: ")
 if inputStr == "":
-    print("Pdf file name is required")
+    Utils.msg_error("Pdf file name is required")
 else:
   pdf_file_name = pdf_dir + "/" + inputStr
   if not os.path.exists(pdf_file_name):
@@ -37,9 +37,9 @@ else:
       result = CleanDir.CleanDir(image_dir)
       if result == True:          
         # if start_page is 1 and end_page is 0, don't pass these params
-        result = ConvertToJPG.ConvertToImage(image_dir, pdf_file_name, int(start_page), int(end_page)) if start_page != "1" or end_page != "0" else ConvertToJPG.ConvertToImage(pdf_file_name)
+        result = ConvertToJPG.ConvertToImage(image_dir, pdf_file_name, int(start_page), int(end_page)) if start_page != "1" or end_page != "0" else ConvertToJPG.ConvertToImage(image_dir, pdf_file_name)
         if result == True:
-            Utils.msg_success("--> Successfully converted to JPG")
+            Utils.msg_info("--> Successfully converted to JPG")
             # Get the list of filenames in the folder
             filenames = os.listdir(image_dir)
             excelWriter = InsertIntoExcel("test.xls")
@@ -52,11 +52,9 @@ else:
                     else:
                        for rec in  info:
                           excelWriter.insert_record(rec)
-                          print("--> Inserted a record for " + filename)
+                          Utils.msg_info("--> Inserted a record for " + filename)
                 else:
-                  print(ConsoleColors.TextColor.RED + "--> Error Occured: " + filename + ConsoleColors.TextColor.RESET)
+                  Utils.msg_warning("--> Error Occured: " + filename)
                   continue
             excelWriter.save_workbook()
-            print(" >>>>> Finished <<<<<")
-      
-
+            Utils.msg_success(" >>>>> Finished <<<<<")
