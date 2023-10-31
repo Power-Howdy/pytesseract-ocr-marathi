@@ -28,10 +28,10 @@ else:
       Utils.msg_error("Error: File does not exist.")
   else:
       pdf_file_name = pdf_file_name    
-      Utils.optional_input("Enter start page number(optional): ")
+      start_page = Utils.optional_input("Enter start page number(optional): ")
       if start_page == "":
           start_page = "1"          
-      Utils.optional_input("Enter end page number(optional): ")
+      end_page = Utils.optional_input("Enter end page number(optional): ")
       if end_page == "":
           end_page = "0"
       result = CleanDir.CleanDir(image_dir)

@@ -4,7 +4,7 @@ from xlwt import Workbook
 class InsertIntoExcel:
     def __init__(self, filename):
         self.filename = filename
-        self.wb = InsertIntoExcel()
+        self.wb = Workbook()
         self.sheet1 = self.wb.add_sheet('Sheet 1')
         
     def insert_data(self, row, col, data):

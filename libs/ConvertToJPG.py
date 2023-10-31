@@ -1,7 +1,7 @@
 import fitz
 
 
-def ConvertToImage(image_dir: str, inputPath: str, startPage: int = 1, endPage: int = 0) -> bool:
+def ConvertToImage(image_dir: str, inputPath: str, startPage: int, endPage: int) -> bool:
     try:
         print("--> Converting pdf to images.")
         pdffile = fitz.open(inputPath)
