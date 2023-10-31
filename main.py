@@ -1,4 +1,9 @@
-from libs import ConvertToJPG, ExtractInfoFromString, ExtractTextFromImage, InsertIntoExcel, CleanDir, Utils
+from libs import Utils
+from libs.ConvertToJPG import ConvertToImage
+from libs.CleanDir import CleanDir
+from libs.ExtractInfoFromString import extract_information
+from libs.ExtractTextFromImage import  ExtractText
+from libs.InsertIntoExcel import InsertIntoExcel
 import os.path
 
 '''
@@ -34,27 +39,31 @@ else:
       end_page = Utils.optional_input("Enter end page number(optional): ")
       if end_page == "":
           end_page = "0"
-      result = CleanDir.CleanDir(image_dir)
+      result = CleanDir(image_dir)
       if result == True:          
         # if start_page is 1 and end_page is 0, don't pass these params
-        result = ConvertToJPG.ConvertToImage(image_dir, pdf_file_name, int(start_page), int(end_page)) if start_page != "1" or end_page != "0" else ConvertToJPG.ConvertToImage(image_dir, pdf_file_name)
+        result = ConvertToImage(image_dir, pdf_file_name, int(start_page), int(end_page)) if start_page != "1" or end_page != "0" else ConvertToImage(image_dir, pdf_file_name)
         if result == True:
             Utils.msg_info("--> Successfully converted to JPG")
             # Get the list of filenames in the folder
             filenames = os.listdir(image_dir)
             excelWriter = InsertIntoExcel("test.xls")
             for filename in filenames:
-                str =  ExtractTextFromImage.ExtractText(image_dir + "/" + filename)
+                str =  ExtractText(image_dir + "/" + filename)
                 if str != "Error":
-                    info = ExtractInfoFromString.extract_information(str)
+                    info = extract_information(str)
                     if len(info) == 0:
+                       Utils.msg_warning("--> Error Occured while extracting information from string: " + filename)
                        continue
                     else:
                        for rec in  info:
                           excelWriter.insert_record(rec)
                           Utils.msg_info("--> Inserted a record for " + filename)
                 else:
-                  Utils.msg_warning("--> Error Occured: " + filename)
+                  Utils.msg_warning("--> Error Occured while OCR: " + filename)
                   continue
             excelWriter.save_workbook()
-            Utils.msg_success(" >>>>> Finished <<<<<")
+
+Utils.msg_success("--------------------------------")
+Utils.msg_success("      >>>>> Finished <<<<<")
+Utils.msg_success("--------------------------------")
