@@ -1,4 +1,4 @@
-from libs import ConvertToJPG, ExtractInfoFromString, ExtractTextFromImage, InsertIntoExcel
+from libs import ConvertToJPG, ExtractInfoFromString, ExtractTextFromImage, InsertIntoExcel, CleanDir, Utils
 import os.path
 
 '''
@@ -14,36 +14,49 @@ Finally insert this information into excel file using InsertIntoExcel
 
 pdf_dir = "pdfs"
 image_dir = "images"
-
 pdf_file_name = ""
 start_page = "1"
 end_page = "0"
 
-
-inputStr = input("Enter pdf file name: ")
+# Start work from here
+inputStr = Utils.essential_input("Enter pdf file name: ")
 if inputStr == "":
     print("Pdf file name is required")
 else:
   pdf_file_name = pdf_dir + "/" + inputStr
   if not os.path.exists(pdf_file_name):
-      print("Error: File does not exist.")
+      Utils.msg_error("Error: File does not exist.")
   else:
       pdf_file_name = pdf_file_name    
-      start_page = input("Enter start page number(optional): ")
+      Utils.optional_input("Enter start page number(optional): ")
       if start_page == "":
           start_page = "1"          
-      end_page = input("Enter end page number(optional): ")
+      Utils.optional_input("Enter end page number(optional): ")
       if end_page == "":
           end_page = "0"
-      # if start_page is 1 and end_page is 0, don't pass these params
-      result = ConvertToJPG.ConvertToImage(image_dir, pdf_file_name, int(start_page), int(end_page)) if start_page != "1" or end_page != "0" else ConvertToJPG.ConvertToImage(pdf_file_name)
-      if result != True:
-          print("--> Error while converting pdf to images")
-      else:
-          print("--> Successfully converted to JPG")
-          # Get the list of filenames in the folder
-          filenames = os.listdir(image_dir)
-          for filename in filenames:
-              print(filename)
+      result = CleanDir.CleanDir(image_dir)
+      if result == True:          
+        # if start_page is 1 and end_page is 0, don't pass these params
+        result = ConvertToJPG.ConvertToImage(image_dir, pdf_file_name, int(start_page), int(end_page)) if start_page != "1" or end_page != "0" else ConvertToJPG.ConvertToImage(pdf_file_name)
+        if result == True:
+            Utils.msg_success("--> Successfully converted to JPG")
+            # Get the list of filenames in the folder
+            filenames = os.listdir(image_dir)
+            excelWriter = InsertIntoExcel("test.xls")
+            for filename in filenames:
+                str =  ExtractTextFromImage.ExtractText(image_dir + "/" + filename)
+                if str != "Error":
+                    info = ExtractInfoFromString.extract_information(str)
+                    if len(info) == 0:
+                       continue
+                    else:
+                       for rec in  info:
+                          excelWriter.insert_record(rec)
+                          print("--> Inserted a record for " + filename)
+                else:
+                  print(ConsoleColors.TextColor.RED + "--> Error Occured: " + filename + ConsoleColors.TextColor.RESET)
+                  continue
+            excelWriter.save_workbook()
+            print(" >>>>> Finished <<<<<")
       
 

@@ -1,10 +1,10 @@
 from xlwt import Workbook 
 
 # Class that creates a workbook and inserts data into it
-class WorkbookCreator:
+class InsertIntoExcel:
     def __init__(self, filename):
         self.filename = filename
-        self.wb = Workbook()
+        self.wb = InsertIntoExcel()
         self.sheet1 = self.wb.add_sheet('Sheet 1')
         
     def insert_data(self, row, col, data):

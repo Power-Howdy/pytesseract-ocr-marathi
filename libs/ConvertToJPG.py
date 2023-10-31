@@ -12,7 +12,7 @@ def ConvertToImage(image_dir: str, inputPath: str, startPage: int = 1, endPage: 
         for p in doc:
             count += 1
         for i in range(startPage - 1, min(endPage, count) if endPage != 0 else count):
-            val = f"${image_dir}/image_{i + 1}.png"
+            val = f"{image_dir}/image_{i + 1}.png"
             page = doc.load_page(i)
             pix = page.get_pixmap(matrix=mat)
             pix.save(val)
