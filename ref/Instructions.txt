@@ -1,0 +1,5 @@
+Hello, 
+I want a script to convert these pdf's into excel.
+I should be able to add start page number and end page number in script.
+In the drive, I have uploaded Sample PDF and Output Excel file.
+If you have any queries, connect me on Discord. 
