@@ -5,6 +5,7 @@ from libs.ExtractInfoFromString import extract_information
 from libs.ExtractTextFromImage import  ExtractText
 from libs.InsertIntoExcel import InsertIntoExcel
 import os.path
+from tqdm import tqdm
 
 '''
 Prompt user to enter pdf file name and start and end page numbers, and output Excel name
@@ -26,11 +27,11 @@ start_page = "1"
 end_page = "0"
 
 # Start work from here
-inputStr = Utils.essential_input("Enter pdf file name: ")
+inputStr = Utils.essential_input("Enter pdf file name(Do not add ext, e.g. 'test.pdf -> test'): ")
 if inputStr == "":
     Utils.msg_error("Pdf file name is required")
 else:
-  pdf_file_name = pdf_dir + "/" + inputStr
+  pdf_file_name = pdf_dir + "/" + inputStr + ".pdf"
   if not os.path.exists(pdf_file_name):
       Utils.msg_error("Error: File does not exist.")
   else:
@@ -46,8 +47,8 @@ else:
         # if start_page is 1 and end_page is 0, don't pass these params
         result = ConvertToImage(image_dir, pdf_file_name, int(start_page), int(end_page))
         if result == True:
-            Utils.msg_info("\n--> Successfully converted to JPG")
-            result_filename = Utils.optional_input("Enter the file name to save result(optional, default is 'test.xls'): ")
+            Utils.msg_info("\n--> Successfully converted to JPG.")
+            result_filename = Utils.optional_input("Enter the file name to save result(optional, default is 'test.xls', Do not add ext, e.g. 'test_res.xls -> test_res'): ")
             if result_filename == "":
                result_filename = "test.xls"
             else:
@@ -63,12 +64,13 @@ else:
             excelWriter.insert_data(5, 'Gender')
             excelWriter.insert_data(6, 'ID')
             excelWriter.insert_new_row()
+            progress_bar = tqdm(total=len(filenames), unit='iteration', ncols=80)
             for k in range(len(filenames)):
                 str =  ExtractText(image_dir + "/" + filenames[k])
                 if str != "Error":
                     info = extract_information(str)
                     if len(info) == 0:
-                       Utils.msg_warning("--> Error Occured while extracting information from string: " + filenames[k])
+                       Utils.msg_warning("\n--> Error Occured while extracting information from string: " + filenames[k])
                        continue
                     else:
                        for i in  range(len(info)):
@@ -80,11 +82,14 @@ else:
                           excelWriter.insert_data(5, info[i]['gender'])
                           excelWriter.insert_data(6, info[i]['ID'])
                           excelWriter.insert_new_row()
-                       Utils.show_progress("--> Inserted records for " + filenames[k])
+                    #    Utils.show_progress("--> Inserting data into excel: " + filenames[k])
+                       progress_bar.update(1)
                 else:
                   Utils.msg_warning("\n--> Error Occured while OCR: " + filenames[k])
                   continue
             excelWriter.save_workbook()
+            progress_bar.close()
+
 Utils.msg_success("\n--------------------------------")
 Utils.msg_success("      >>>>> Finished <<<<<")
 Utils.msg_success("--------------------------------")

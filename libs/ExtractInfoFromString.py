@@ -3,13 +3,7 @@ import re
 
 def extract_information(input_string):
     try:
-      # Preprocess input_string
-      input_string = input_string.strip()
-      # Replace all \n\n with \n      
-      input_string = input_string.replace('\r\n', '\n')
-      input_string = input_string.replace('\n\n', '\n')
-
-      # Define regex patterns for each field
+       # Define regex patterns for each field
       name_pattern = r'नाव\s*:\s*([^\n]+)'
       father_name_pattern = r'वडीलांचे नाव\s*:\s*([^\n]+)'
       house_number_pattern = r'घर क्रमाक\s*:\s*([^\n]+)'
@@ -23,12 +17,11 @@ def extract_information(input_string):
       ages = re.findall(age_pattern, input_string)
       genders = re.findall(gender_pattern, input_string)
       ids = re.findall(id_pattern, input_string)
-      # Open the file in append mode
-      with open('data.txt', 'a', encoding='utf-8') as file:
+      # Open the file in append mode --- temporary for debugging
+      with open('result/data.txt', 'a', encoding='utf-8') as file:
           # Append data to the file
-          file.write('---------------------------------\n')
+          file.write(f"\n\n{'-'*60}\n")
           file.write(input_string)
-          file.write('---------------------------------\n')
       # Combine the extracted information into a list of dictionaries
       extracted_information = []
       for i in range(len(names)):
