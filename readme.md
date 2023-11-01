@@ -45,5 +45,5 @@
   ```bash
   python main.py
   ```
-- Enter as required  the pdf file name
+- Enter as required during the process
 - Output will be in **result** directory
