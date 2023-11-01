@@ -1,29 +1,33 @@
-from libs import ConsoleColors
+from libs.ConsoleColors import TextColor
 
 # Function to get colored input
 def colored_input(prompt, color):
-    return input(color + prompt + ConsoleColors.TextColor.RESET)
+    return input(color + prompt + TextColor.RESET)
 
 def essential_input(prompt):
-    return input(ConsoleColors.TextColor.CYAN + prompt + ConsoleColors.TextColor.RESET)
+    return input(TextColor.CYAN + prompt + TextColor.RESET)
 
 def optional_input(prompt):
-    return input(ConsoleColors.TextColor.GREEN + prompt + ConsoleColors.TextColor.RESET)
+    return input(TextColor.GREEN + prompt + TextColor.RESET)
 
 def msg_success(str):
-    print(ConsoleColors.TextColor.BLUE + str + ConsoleColors.TextColor.RESET)
+    print(TextColor.BLUE + str + TextColor.RESET)
 
 def msg_error(str):
-    print(ConsoleColors.TextColor.RED + str + ConsoleColors.TextColor.RESET)
+    print(TextColor.RED + str + TextColor.RESET)
 
 def msg_warning(str):
-    print(ConsoleColors.TextColor.YELLOW + str + ConsoleColors.TextColor.RESET)
+    print(TextColor.YELLOW + str + TextColor.RESET)
 
 def msg_info(str):
-    print(ConsoleColors.TextColor.CYAN + str + ConsoleColors.TextColor.RESET)
+    print(TextColor.CYAN + str + TextColor.RESET)
 
 def msg_debug(str):
-    print(ConsoleColors.TextColor.MAGENTA + str + ConsoleColors.TextColor.RESET)
+    print(TextColor.MAGENTA + str + TextColor.RESET)
 
 def msg_normal(str):
     print(str)
+
+def show_progress(str):
+   spaces = " " * 30  # Assuming you want 60 spaces
+   print(f"{TextColor.GREEN}{str}{spaces}{TextColor.RESET}", end='\r')

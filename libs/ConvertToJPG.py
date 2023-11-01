@@ -1,9 +1,8 @@
 import fitz
-
+from libs import Utils
 
 def ConvertToImage(image_dir: str, inputPath: str, startPage: int, endPage: int) -> bool:
     try:
-        print("--> Converting pdf to images.")
         pdffile = fitz.open(inputPath)
         doc = fitz.open(pdffile)
         zoom = 4
@@ -16,7 +15,7 @@ def ConvertToImage(image_dir: str, inputPath: str, startPage: int, endPage: int)
             page = doc.load_page(i)
             pix = page.get_pixmap(matrix=mat)
             pix.save(val)
-            print("--> Convert Page " + str(i + 1) + " done.")
+            Utils.show_progress("--> Converting Pages to Images: " + str(i + 1) + " / " + str(count) + " done.")
         doc.close()
         return True
     except Exception as e:

@@ -19,6 +19,8 @@ Finally insert this information into excel file using InsertIntoExcel
 
 pdf_dir = "pdfs"
 image_dir = "images"
+result_dir = "result"
+result_filename = "result"
 pdf_file_name = ""
 start_page = "1"
 end_page = "0"
@@ -42,28 +44,47 @@ else:
       result = CleanDir(image_dir)
       if result == True:          
         # if start_page is 1 and end_page is 0, don't pass these params
-        result = ConvertToImage(image_dir, pdf_file_name, int(start_page), int(end_page)) if start_page != "1" or end_page != "0" else ConvertToImage(image_dir, pdf_file_name)
+        result = ConvertToImage(image_dir, pdf_file_name, int(start_page), int(end_page))
         if result == True:
-            Utils.msg_info("--> Successfully converted to JPG")
+            Utils.msg_info("\n--> Successfully converted to JPG")
+            result_filename = Utils.optional_input("Enter the file name to save result(optional, default is 'test.xls'): ")
+            if result_filename == "":
+               result_filename = "test.xls"
+            else:
+               result_filename += ".xls"
             # Get the list of filenames in the folder
             filenames = os.listdir(image_dir)
-            excelWriter = InsertIntoExcel("test.xls")
-            for filename in filenames:
-                str =  ExtractText(image_dir + "/" + filename)
+            excelWriter = InsertIntoExcel(result_dir + "/" + result_filename)
+            excelWriter.insert_data(0, 'No')
+            excelWriter.insert_data(1, 'Name')
+            excelWriter.insert_data(2, 'Father\'s name')
+            excelWriter.insert_data(3, 'House no')
+            excelWriter.insert_data(4, 'Age')
+            excelWriter.insert_data(5, 'Gender')
+            excelWriter.insert_data(6, 'ID')
+            excelWriter.insert_new_row()
+            for k in range(len(filenames)):
+                str =  ExtractText(image_dir + "/" + filenames[k])
                 if str != "Error":
                     info = extract_information(str)
                     if len(info) == 0:
-                       Utils.msg_warning("--> Error Occured while extracting information from string: " + filename)
+                       Utils.msg_warning("--> Error Occured while extracting information from string: " + filenames[k])
                        continue
                     else:
-                       for rec in  info:
-                          excelWriter.insert_record(rec)
-                          Utils.msg_info("--> Inserted a record for " + filename)
+                       for i in  range(len(info)):
+                          excelWriter.insert_data(0, info[i]['no'])
+                          excelWriter.insert_data(1, info[i]['name'])
+                          excelWriter.insert_data(2, info[i]['fname'])
+                          excelWriter.insert_data(3, info[i]['hno'])
+                          excelWriter.insert_data(4, info[i]['age'])
+                          excelWriter.insert_data(5, info[i]['gender'])
+                          excelWriter.insert_data(6, info[i]['ID'])
+                          excelWriter.insert_new_row()
+                       Utils.show_progress("--> Inserted records for " + filenames[k])
                 else:
-                  Utils.msg_warning("--> Error Occured while OCR: " + filename)
+                  Utils.msg_warning("\n--> Error Occured while OCR: " + filenames[k])
                   continue
             excelWriter.save_workbook()
-
-Utils.msg_success("--------------------------------")
+Utils.msg_success("\n--------------------------------")
 Utils.msg_success("      >>>>> Finished <<<<<")
 Utils.msg_success("--------------------------------")
